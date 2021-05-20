@@ -19,7 +19,8 @@ export const Alert = () => {
       <div
         className={`alert alert-${alert.type || "warning"} alert-dismissible`}
       >
-        <strong>Внимание</strong>
+        <strong>Внимание!</strong>
+        <br/>
         {alert.text}
         <button
           onClick={hide}
