@@ -2,7 +2,7 @@ import React, { useReducer } from "react";
 import axios from "axios";
 import { FirebaseContext } from "./firebaseContext";
 import { FirebaseReducer } from "./firebaseReducer";
-import { SHOW_LOADER, REMOVE_NOTE } from "../types";
+import { SHOW_LOADER, REMOVE_NOTE, ADD_NOTE, FETCH_NOTES } from "../types";
 
 const url = process.env.REACT_APP_DB_URL;
 // idea state child have  support context
@@ -20,7 +20,19 @@ export const FirebaseState = ({ children }) => {
   const fetchNotes = async () => {
     showLoader();
     const res = await axios.get(`${url}/notes.json`);
-    console.log("fetchNotes", res.data);
+    //transformation to array
+    const payload = Object.keys(res.data).map((key) => {
+      return {
+        // expand the dat
+        ...res.data[key],
+        id: key,
+      };
+    });
+
+    dispatch({
+      type: FETCH_NOTES,
+      payload,
+    });
   };
 
   const addNote = async (title) => {
@@ -28,9 +40,22 @@ export const FirebaseState = ({ children }) => {
       title,
       date: new Date().toJSON(),
     };
-    //creating a variable note
-    const res = await axios.post(`${url}/notes.json`, note);
-    console.log("addNote", res.data);
+
+    try {
+      //creating a variable note
+      const res = await axios.post(`${url}/notes.json`, note);
+      //add visual display
+      const payload = {
+        ...note,
+        id: res.data.name,
+      };
+      dispatch({
+        type: ADD_NOTE,
+        payload,
+      });
+    } catch (e) {
+      throw new Error(e.message);
+    }
   };
 
   const removeNote = async (id) => {
