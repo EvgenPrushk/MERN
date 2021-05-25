@@ -1,4 +1,4 @@
-# React JS
+# React JS App
 
 [Ссылка на урок в youtube №1](https://www.youtube.com/watch?v=V1rhxheJg4A&t=3063s)
 
